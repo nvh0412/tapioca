@@ -59,7 +59,9 @@ class Tapioca::Compilers::SymbolTableCompilerSpec < Minitest::HooksSpec
           extend(::T::Helpers)
           extend(T::Generic)
 
-          Elem = type_member(fixed: Integer)
+          Elem = type_template(:in, fixed: Integer)
+          K = type_member(upper: Numeric)
+          V = type_member(lower: String)
 
           interface!
 
@@ -70,6 +72,10 @@ class Tapioca::Compilers::SymbolTableCompilerSpec < Minitest::HooksSpec
 
       output = template(<<~RUBY)
         module Bar
+          Elem = type_template(:in, fixed: Integer)
+          K = type_member(upper: Numeric)
+          V = type_member(lower: String)
+
           interface!
         end
 
@@ -1870,6 +1876,15 @@ class Tapioca::Compilers::SymbolTableCompilerSpec < Minitest::HooksSpec
         module Quux
           extend(T::Sig)
           extend(T::Helpers)
+          extend(T::Generic)
+
+          A = type_template(:in)
+          B = type_template(:out)
+          C = type_template
+
+          D = type_member(fixed: Integer)
+          E = type_member(fixed: Integer, upper: Numeric)
+          F = type_member(fixed: Integer, lower: Complex, upper: Numeric)
 
           interface!
 
@@ -1940,6 +1955,13 @@ class Tapioca::Compilers::SymbolTableCompilerSpec < Minitest::HooksSpec
         end
 
         module Quux
+          A = type_template(:in)
+          B = type_template(:out)
+          C = type_template()
+          D = type_member(fixed: Integer)
+          E = type_member(fixed: Integer, upper: Numeric)
+          F = type_member(fixed: Integer, lower: Complex, upper: Numeric)
+
           interface!
 
           sig { abstract.returns(Integer) }
