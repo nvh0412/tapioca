@@ -765,10 +765,10 @@ class Tapioca::Compilers::Dsl::ActiveRecordColumnsSpec < DslSpec
         }
 
         expected = indented(<<~RUBY, 2)
-          sig { returns(T.nilable(T.untyped)) }
+          sig { returns(T.nilable(ValueType[Integer])) }
           def cost; end
 
-          sig { params(value: T.nilable(T.untyped)).returns(T.nilable(T.untyped)) }
+          sig { params(value: T.nilable(ValueType[Integer])).returns(T.nilable(ValueType[Integer])) }
           def cost=(value); end
         RUBY
 
