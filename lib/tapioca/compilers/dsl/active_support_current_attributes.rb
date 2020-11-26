@@ -76,20 +76,20 @@ module Tapioca
           instance_methods = instance_methods_for(constant) - dynamic_methods
           return if dynamic_methods.empty? && instance_methods.empty?
 
-          root.path(constant) do |k|
+          root.path(constant) do |current_attributes|
             dynamic_methods.each do |method|
               method = method.to_s
               # We want to generate each method both on the class
-              generate_method(k, method, class_method: true)
+              generate_method(current_attributes, method, class_method: true)
               # and on the instance
-              generate_method(k, method, class_method: false)
+              generate_method(current_attributes, method, class_method: false)
             end
 
             instance_methods.each do |method|
               # instance methods are only elevated to class methods
               # no need to add separate instance methods for them
               method = constant.instance_method(method)
-              create_method_from_def(k, method, class_method: true)
+              create_method_from_def(current_attributes, method, class_method: true)
             end
           end
         end
@@ -113,12 +113,9 @@ module Tapioca
 
         sig { params(klass: Parlour::RbiGenerator::Namespace, method: String, class_method: T::Boolean).void }
         def generate_method(klass, method, class_method:)
-          if method.end_with?("=")
-            parameter = Parlour::RbiGenerator::Parameter.new("value", type: "T.untyped")
-            klass.create_method(method, class_method: class_method, parameters: [parameter], return_type: "T.untyped")
-          else
-            klass.create_method(method, class_method: class_method, return_type: "T.untyped")
-          end
+          parameters = []
+          parameters << Parlour::RbiGenerator::Parameter.new("value", type: "T.untyped") if method.end_with?("=")
+          klass.create_method(method, class_method: class_method, parameters: parameters, return_type: "T.untyped")
         end
       end
     end
